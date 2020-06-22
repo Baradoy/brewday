@@ -1,1 +1,2 @@
 data/influxdb/
+temperature_shipper/config.h
