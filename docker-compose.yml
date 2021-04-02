@@ -28,3 +28,35 @@ services:
       - ./conf/grafana/datasources:/etc/grafana/provisioning/datasources/
       - ./conf/grafana/dashboards:/etc/grafana/provisioning/dashboards/
     restart: unless-stopped
+
+  homeassistant:
+    container_name: homeassistant 
+    restart: unless-stopped
+    image: homeassistant/home-assistant
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    volumes:
+      - ./conf/homeassistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf/homeassistant/shared:/shared
+      - /dev/serial/by-id/:/dev/serial/by-id/
+    network_mode: host
+    privileged: true
+
+  deconz:
+    image: marthoc/deconz
+    container_name: deconz
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+       - ./conf/deconz:/root/.local/share/dresden-elektronik/deCONZ
+    devices:
+       - /dev/ttyACM0
+    environment:
+      - DECONZ_WEB_PORT=8080
+      - DECONZ_WS_PORT=8081
+      - DEBUG_INFO=1
+      - DEBUG_APS=0
+      - DEBUG_ZCL=0
+      - DEBUG_ZDP=0
+      - DEBUG_OTAU=0
